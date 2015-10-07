@@ -1,12 +1,11 @@
 {
   "name": "gulp-binarta-template",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "gulp build for Binarta templates",
   "main": "gulpfile.js",
   "repository": "binarta/gulp-binarta-template",
   "dependencies": {
     "del": "^1.1.0",
-    "gulp": "^3.8.10",
     "gulp-angular-templatecache": "^1.6.0",
     "gulp-autoprefixer": "^2.0.0",
     "gulp-bower": "0.0.7",

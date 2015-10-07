@@ -1,5 +1,4 @@
-var gulp = require('gulp'),
-    template = require('gulp-template'),
+var template = require('gulp-template'),
     data = require('gulp-data'),
     rename = require('gulp-rename'),
     del = require('del'),
@@ -21,10 +20,11 @@ var gulp = require('gulp'),
     nodeExtend = require('node.extend'),
     minifyHtml = require('gulp-minify-html'),
     templateCache = require('gulp-angular-templatecache'),
+    serve = require('gulp-serve'),
     fs = require('fs'),
-    serve = require('gulp-serve');
+    workingDir = process.cwd();
 
-module.exports = function() {
+module.exports = function(gulp) {
     var knownOptions = {
         string: 'env',
         boolean: 'catalog',
@@ -54,7 +54,7 @@ module.exports = function() {
 
     var options = minimist(process.argv.slice(2), knownOptions);
 
-    var context = require('./config.json');
+    var context = require(workingDir + '/config.json');
     context.version = options.env == 'dev' ? 0 : version;
 
     Object.keys(context.environments[options.env]).forEach(function (k) {
@@ -67,14 +67,14 @@ module.exports = function() {
     context.uiBlocks = options.uiBlocks;
 
     try {
-        var userContext = require('./user-config.json');
+        var userContext = require(workingDir + '/user-config.json');
         Object.keys(userContext).forEach(function (k) {
             context[k] = userContext[k];
         });
     } catch (ignored) {
     }
 
-    context.metadata = require('./src/web/metadata.json');
+    context.metadata = require(workingDir + '/src/web/metadata.json');
 
     gulp.task('clean', function (cb) {
         del(['update.build'], cb);
@@ -275,4 +275,3 @@ module.exports = function() {
 
     gulp.task('default', ['update.build']);
 };
-
