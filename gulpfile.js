@@ -61,10 +61,10 @@ module.exports = function(gulp) {
         context[k] = context.environments[options.env][k];
     });
 
-    context.catalog = options.catalog;
-    context.blog = options.blog;
-    context.shop = options.shop;
-    context.uiBlocks = options.uiBlocks;
+    context.catalog = context.catalog || options.catalog;
+    context.blog = context.blog || options.blog;
+    context.shop = context.shop || options.shop;
+    context.uiBlocks = context.uiBlocks || options.uiBlocks;
 
     try {
         var userContext = require(workingDir + '/user-config.json');
