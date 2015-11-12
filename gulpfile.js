@@ -19,6 +19,7 @@ var template = require('gulp-template'),
     extend = require('gulp-extend'),
     nodeExtend = require('node.extend'),
     minifyHtml = require('gulp-minify-html'),
+    minifyInline = require('gulp-minify-inline'),
     templateCache = require('gulp-angular-templatecache'),
     serve = require('gulp-serve'),
     fs = require('fs'),
@@ -218,6 +219,8 @@ module.exports = function(gulp) {
             .pipe(rename(function (path) {
                 path.extname = '';
             }))
+            .pipe(minifyInline())
+            .pipe(minifyHtml(minifyHtmlOpts))
             .pipe(gulp.dest('build/dist'));
     }
     gulp.task('compile.web.templates', ['dirty.scripts', 'dirty.partials'], CompileWebTemplatesTask);
