@@ -220,7 +220,6 @@ module.exports = function(gulp) {
                 path.extname = '';
             }))
             .pipe(minifyInline())
-            .pipe(minifyHtml(minifyHtmlOpts))
             .pipe(gulp.dest('build/dist'));
     }
     gulp.task('compile.web.templates', ['dirty.scripts', 'dirty.partials'], CompileWebTemplatesTask);
