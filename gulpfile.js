@@ -78,7 +78,7 @@ module.exports = function(gulp) {
     context.metadata = require(workingDir + '/src/web/metadata.json');
 
     gulp.task('clean', function (cb) {
-        del(['update.build'], cb);
+        del(['build'], cb);
     });
 
     gulp.task('images', ['clean'], function () {
