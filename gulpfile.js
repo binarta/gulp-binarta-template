@@ -31,6 +31,7 @@ module.exports = function(gulp) {
         boolean: 'catalog',
         boolean: 'blog',
         boolean: 'shop',
+        boolean: 'paypal',
         boolean: 'skipBower',
         boolean: 'uiBlocks',
         string: 'port',
@@ -161,7 +162,8 @@ module.exports = function(gulp) {
             {type:'default', predicate:true},
             {type:'blog', predicate:context.blog},
             {type:'catalog', predicate:context.catalog},
-            {type:'shop', predicate:context.shop}
+            {type:'shop', predicate:context.shop},
+            {type:'paypal', predicate:context.paypal}
         ].reduce(extractRequiredSourcesFrom(jsSources), {});
         return gulp.src(valuesForObject(sources))
             .pipe(concat('libs.js'))
