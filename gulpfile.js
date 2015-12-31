@@ -66,6 +66,7 @@ module.exports = function(gulp) {
     context.catalog = context.catalog || options.catalog;
     context.blog = context.blog || options.blog;
     context.shop = context.shop || options.shop;
+    context.paypal = context.paypal || options.paypal;
     context.uiBlocks = context.uiBlocks || options.uiBlocks;
 
     try {
