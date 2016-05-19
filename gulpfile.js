@@ -33,7 +33,6 @@ module.exports = function(gulp) {
         boolean: 'shop',
         boolean: 'paypal',
         boolean: 'skipBower',
-        boolean: 'uiBlocks',
         string: 'port',
         default: {
             env: process.env.NODE_ENV || 'dev',
@@ -41,7 +40,6 @@ module.exports = function(gulp) {
             blog: false,
             shop: false,
             skipBower: false,
-            uiBlocks: false,
             port: 3000
         }
     };
@@ -67,7 +65,6 @@ module.exports = function(gulp) {
     context.blog = context.blog || options.blog;
     context.shop = context.shop || options.shop;
     context.paypal = context.paypal || options.paypal;
-    context.uiBlocks = context.uiBlocks || options.uiBlocks;
 
     try {
         var userContext = require(workingDir + '/user-config.json');
