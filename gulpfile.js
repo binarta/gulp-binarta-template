@@ -28,17 +28,10 @@ var template = require('gulp-template'),
 module.exports = function(gulp) {
     var knownOptions = {
         string: 'env',
-        boolean: 'catalog',
-        boolean: 'blog',
-        boolean: 'shop',
-        boolean: 'paypal',
         boolean: 'skipBower',
         string: 'port',
         default: {
             env: process.env.NODE_ENV || 'dev',
-            catalog: false,
-            blog: true,
-            shop: false,
             skipBower: false,
             port: 3000
         }
@@ -61,18 +54,21 @@ module.exports = function(gulp) {
         context[k] = context.environments[options.env][k];
     });
 
-    context.catalog = context.catalog || options.catalog;
-    context.blog = context.blog || options.blog;
-    context.shop = context.shop || options.shop;
-    context.paypal = context.paypal || options.paypal;
-
+    var userContext = {};
     try {
-        var userContext = require(workingDir + '/user-config.json');
+        userContext = require(workingDir + '/user-config.json');
         Object.keys(userContext).forEach(function (k) {
             context[k] = userContext[k];
         });
     } catch (ignored) {
     }
+    
+    context.enterprise = userContext.type == 'enterprise' || context.type == 'enterprise';
+    context.professional = userContext.type == 'professional' || context.type == 'professional' || context.enterprise;
+    context.blog = userContext.blog || context.blog || true;
+    context.catalog = userContext.catalog || context.catalog || context.professional;
+    context.shop = userContext.shop || context.shop || context.enterprise;
+    context.paypal = userContext.paypal || context.paypal || context.enterprise;
 
     context.metadata = require(workingDir + '/src/web/metadata.json');
 
@@ -161,7 +157,9 @@ module.exports = function(gulp) {
             {type:'blog', predicate:context.blog},
             {type:'catalog', predicate:context.catalog},
             {type:'shop', predicate:context.shop},
-            {type:'paypal', predicate:context.paypal}
+            {type:'paypal', predicate:context.paypal},
+            {type:'professional', predicate:context.professional},
+            {type:'enterprise', predicate:context.enterprise}
         ].reduce(extractRequiredSourcesFrom(jsSources), {});
         return gulp.src(valuesForObject(sources))
             .pipe(concat('libs.js'))
