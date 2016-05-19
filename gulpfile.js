@@ -37,7 +37,7 @@ module.exports = function(gulp) {
         default: {
             env: process.env.NODE_ENV || 'dev',
             catalog: false,
-            blog: false,
+            blog: true,
             shop: false,
             skipBower: false,
             port: 3000
