@@ -28,6 +28,11 @@ var template = require('gulp-template'),
 module.exports = function(gulp) {
     var knownOptions = {
         string: 'env',
+        boolean: 'catalog',
+        boolean: 'blog',
+        boolean: 'shop',
+        boolean: 'paypal',
+        string: 'subscription',
         boolean: 'skipBower',
         string: 'port',
         default: {
@@ -62,13 +67,25 @@ module.exports = function(gulp) {
         });
     } catch (ignored) {
     }
-    
-    context.enterprise = userContext.type == 'enterprise' || context.type == 'enterprise';
-    context.professional = userContext.type == 'professional' || context.type == 'professional' || context.enterprise;
-    context.blog = userContext.blog || context.blog || true;
-    context.catalog = userContext.catalog || context.catalog || context.professional;
-    context.shop = userContext.shop || context.shop || context.enterprise;
-    context.paypal = userContext.paypal || context.paypal || context.enterprise;
+
+    context.enterprise = options.subscription == 'enterprise' || userContext.subscription == 'enterprise' || context.subscription == 'enterprise';
+    context.professional = options.subscription == 'professional' || userContext.subscription == 'professional' || context.subscription == 'professional' || context.enterprise;
+
+    if (userContext.blog != undefined) context.blog = userContext.blog;
+    else if (options.blog != undefined) context.blog = options.blog;
+    if (context.blog == undefined) context.blog = true;
+
+    if (userContext.catalog != undefined) context.catalog = userContext.catalog;
+    else if (options.catalog != undefined) context.catalog = options.catalog;
+    if (context.catalog == undefined) context.catalog = context.professional;
+
+    if (userContext.shop != undefined) context.shop = userContext.shop;
+    else if (options.shop != undefined) context.shop = options.shop;
+    if (context.shop == undefined) context.shop = context.enterprise;
+
+    if (userContext.paypal != undefined) context.paypal = userContext.paypal;
+    else if (options.paypal != undefined) context.paypal = options.paypal;
+    if (context.paypal == undefined) context.paypal = context.enterprise;
 
     context.metadata = require(workingDir + '/src/web/metadata.json');
 
