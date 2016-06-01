@@ -217,7 +217,7 @@ module.exports = function(gulp) {
                 browsers: ['last 2 versions'],
                 cascade: false
             }))
-            .pipe(csso())
+            .pipe(csso({restructure: false}))
             .pipe(rename("app.css"))
             .pipe(gulp.dest('build/dist/styles'));
     }
