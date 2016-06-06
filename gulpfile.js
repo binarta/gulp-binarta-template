@@ -170,6 +170,7 @@ module.exports = function(gulp) {
             jsSources = nodeExtend(true, jsSources, require(src));
         });
         var sources = [
+            {type:'init', predicate:true},
             {type:'default', predicate:true},
             {type:'blog', predicate:context.blog},
             {type:'catalog', predicate:context.catalog},
