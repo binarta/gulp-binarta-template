@@ -150,7 +150,7 @@ module.exports = function(gulp) {
 
     gulp.task('update.metadata-system', ['update'], MetadataSystemTask);
     gulp.task('metadata-system', ['clean', 'compileBowerConfig'], MetadataSystemTask);
-    gulp.task('dirty.metadata-system', ['compileBowerConfig', MetadataSystemTask]);
+    gulp.task('dirty.metadata-system', ['compileBowerConfig'], MetadataSystemTask);
 
     function MetadataAppTask() {
         return gulp.src(mainBowerFiles().concat(context.sources))
@@ -161,7 +161,7 @@ module.exports = function(gulp) {
 
     gulp.task('update.metadata-app', ['update'], MetadataAppTask);
     gulp.task('metadata-app', ['clean', 'compileBowerConfig'], MetadataAppTask);
-    gulp.task('dirty.metadata-app', ['compileBowerConfig', MetadataAppTask]);
+    gulp.task('dirty.metadata-app', ['compileBowerConfig'], MetadataAppTask);
 
     function MetadataTask() {
         return gulp.src(mainBowerFiles().concat(context.sources))
@@ -217,7 +217,7 @@ module.exports = function(gulp) {
 
     gulp.task('update.scripts', ['update'], ScriptsTask);
     gulp.task('scripts', ['clean', 'compileBowerConfig'], ScriptsTask);
-    gulp.task('dirty.scripts', ['compileBowerConfig', ScriptsTask]);
+    gulp.task('dirty.scripts', ['compileBowerConfig'], ScriptsTask);
     gulp.task('livereload.scripts', function () {
         return ScriptsTask().pipe(livereload());
     });
