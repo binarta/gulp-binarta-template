@@ -8,13 +8,14 @@ var template = require('gulp-template'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
     less = require('gulp-less'),
+    LessAutoprefix = require('less-plugin-autoprefix'),
+    LessPluginCleanCSS = require('less-plugin-clean-css'),
     path = require('path'),
-    cssimport = require('gulp-cssimport'),
-    autoprefixer = require('gulp-autoprefixer'),
     livereload = require('gulp-livereload'),
     gulpif = require('gulp-if'),
-    csso = require('gulp-csso'),
     mainBowerFiles = require('main-bower-files'),
+    gulpMainBowerFiles = require('gulp-main-bower-files'),
+    eventStream = require('event-stream'),
     filter = require('gulp-filter'),
     extend = require('gulp-extend'),
     nodeExtend = require('node.extend'),
@@ -33,11 +34,9 @@ module.exports = function(gulp) {
         boolean: 'shop',
         boolean: 'paypal',
         string: 'subscription',
-        boolean: 'skipBower',
         string: 'port',
         default: {
             env: process.env.NODE_ENV || 'dev',
-            skipBower: false,
             port: 3000
         }
     };
@@ -93,6 +92,10 @@ module.exports = function(gulp) {
         del(['build'], cb);
     });
 
+    gulp.task('cleanBower', function (cb) {
+        del(['bower_components'], cb);
+    });
+
     gulp.task('images', ['clean'], function () {
         return gulp.src(['src/web/img/**/*'])
             .pipe(gulp.dest('build/dist/img'));
@@ -105,8 +108,17 @@ module.exports = function(gulp) {
 
     gulp.task('sources', ['images', 'fonts']);
 
-    gulp.task('update', ['clean'], function () {
-        if (options.skipBower) return;
+    gulp.task('compileBowerConfig', function () {
+        return gulp.src('bower.json.template')
+            .pipe(data(context))
+            .pipe(template())
+            .pipe(rename(function (path) {
+                path.extname = '';
+            }))
+            .pipe(gulp.dest("./"));
+    });
+
+    gulp.task('update', ['clean', 'cleanBower', 'compileBowerConfig'], function () {
         return bower({cmd: 'update'}).pipe(gulp.dest('build/libs'));
     });
 
@@ -166,7 +178,7 @@ module.exports = function(gulp) {
 
     function ScriptsTask() {
         var jsSources = context.jsSources;
-        mainBowerFiles('**/sources.json').forEach(function (src) {
+        mainBowerFiles('**/bower_components/binarta.**/sources.json').forEach(function (src) {
             jsSources = nodeExtend(true, jsSources, require(src));
         });
         var sources = [
@@ -211,15 +223,18 @@ module.exports = function(gulp) {
     });
 
     function CompileLessTask() {
-        return gulp.src('src/web/styles/combined.less')
-            .pipe(less({paths: [path.join(__dirname, 'update.less', 'includes')]}))
-            .pipe(cssimport())
-            .pipe(autoprefixer({
-                browsers: ['last 2 versions'],
-                cascade: false
+        var autoprefix = new LessAutoprefix({ browsers: ['last 2 versions'] });
+        var cleanCSS = new LessPluginCleanCSS({advanced: true});
+
+        return eventStream.merge(
+                gulp.src('bower.json').pipe(gulpMainBowerFiles('**/bower_components/binarta.**/less/*.less')),
+                gulp.src('src/web/styles/combined.less')
+            )
+            .pipe(less({
+                plugins: [autoprefix, cleanCSS],
+                paths: [path.join(__dirname, 'less', 'includes')]
             }))
-            .pipe(csso({restructure: false}))
-            .pipe(rename("app.css"))
+            .pipe(concat('app.css'))
             .pipe(gulp.dest('build/dist/styles'));
     }
     gulp.task('update.less', ['update'], CompileLessTask);
