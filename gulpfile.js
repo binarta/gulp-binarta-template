@@ -132,7 +132,7 @@ module.exports = function(gulp) {
     }
 
     gulp.task('update.copy.bower.mails', ['update'], CopyBowerMailsTask);
-    gulp.task('copy.bower.mails', ['clean'], CopyBowerMailsTask);
+    gulp.task('copy.bower.mails', ['clean', 'compileBowerConfig'], CopyBowerMailsTask);
 
     function MailsTask() {
         return gulp.src(['src/mail/**/*.template'])
@@ -149,8 +149,8 @@ module.exports = function(gulp) {
     }
 
     gulp.task('update.metadata-system', ['update'], MetadataSystemTask);
-    gulp.task('metadata-system', ['clean'], MetadataSystemTask);
-    gulp.task('dirty.metadata-system', MetadataSystemTask);
+    gulp.task('metadata-system', ['clean', 'compileBowerConfig'], MetadataSystemTask);
+    gulp.task('dirty.metadata-system', ['compileBowerConfig', MetadataSystemTask]);
 
     function MetadataAppTask() {
         return gulp.src(mainBowerFiles().concat(context.sources))
@@ -160,8 +160,8 @@ module.exports = function(gulp) {
     }
 
     gulp.task('update.metadata-app', ['update'], MetadataAppTask);
-    gulp.task('metadata-app', ['clean'], MetadataAppTask);
-    gulp.task('dirty.metadata-app', MetadataAppTask);
+    gulp.task('metadata-app', ['clean', 'compileBowerConfig'], MetadataAppTask);
+    gulp.task('dirty.metadata-app', ['compileBowerConfig', MetadataAppTask]);
 
     function MetadataTask() {
         return gulp.src(mainBowerFiles().concat(context.sources))
@@ -171,7 +171,7 @@ module.exports = function(gulp) {
     }
 
     gulp.task('update.metadata', ['update', 'update.metadata-system', 'update.metadata-app'], MetadataTask);
-    gulp.task('metadata', ['clean', 'metadata-system', 'metadata-app'], MetadataTask);
+    gulp.task('metadata', ['clean', 'compileBowerConfig', 'metadata-system', 'metadata-app'], MetadataTask);
     gulp.task('livereload.metadata', ['dirty.metadata-system', 'dirty.metadata-app'], function () {
         return MetadataTask().pipe(livereload());
     });
@@ -216,8 +216,8 @@ module.exports = function(gulp) {
     }
 
     gulp.task('update.scripts', ['update'], ScriptsTask);
-    gulp.task('scripts', ['clean'], ScriptsTask);
-    gulp.task('dirty.scripts', ScriptsTask);
+    gulp.task('scripts', ['clean', 'compileBowerConfig'], ScriptsTask);
+    gulp.task('dirty.scripts', ['compileBowerConfig', ScriptsTask]);
     gulp.task('livereload.scripts', function () {
         return ScriptsTask().pipe(livereload());
     });
@@ -238,7 +238,7 @@ module.exports = function(gulp) {
             .pipe(gulp.dest('build/dist/styles'));
     }
     gulp.task('update.less', ['update'], CompileLessTask);
-    gulp.task('less', ['clean'], CompileLessTask);
+    gulp.task('less', ['clean', 'compileBowerConfig'], CompileLessTask);
     gulp.task('livereload.less', function () {
         return CompileLessTask().pipe(livereload());
     });
