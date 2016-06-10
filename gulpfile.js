@@ -67,6 +67,7 @@ module.exports = function(gulp) {
     } catch (ignored) {
     }
 
+    context.subscription = options.subscription || userContext.subscription || context.subscription;
     context.enterprise = options.subscription == 'enterprise' || userContext.subscription == 'enterprise' || context.subscription == 'enterprise';
     context.professional = options.subscription == 'professional' || userContext.subscription == 'professional' || context.subscription == 'professional' || context.enterprise;
 
