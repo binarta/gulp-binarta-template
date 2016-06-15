@@ -15,7 +15,7 @@ var template = require('gulp-template'),
     gulpif = require('gulp-if'),
     mainBowerFiles = require('main-bower-files'),
     gulpMainBowerFiles = require('gulp-main-bower-files'),
-    eventStream = require('event-stream'),
+    streamqueue = require('streamqueue'),
     filter = require('gulp-filter'),
     extend = require('gulp-extend'),
     nodeExtend = require('node.extend'),
@@ -227,10 +227,10 @@ module.exports = function(gulp) {
         var autoprefix = new LessAutoprefix({ browsers: ['last 2 versions'] });
         var cleanCSS = new LessPluginCleanCSS({advanced: true});
 
-        return eventStream.merge(
-                gulp.src('bower.json').pipe(gulpMainBowerFiles('**/bower_components/binarta.**/less/*.less')),
-                gulp.src('src/web/styles/combined.less')
-            )
+        return streamqueue({ objectMode: true },
+            gulp.src('bower.json').pipe(gulpMainBowerFiles('**/bower_components/binarta.**/less/*.less')),
+            gulp.src('src/web/styles/combined.less')
+        )
             .pipe(less({
                 plugins: [autoprefix, cleanCSS],
                 paths: [path.join(__dirname, 'less', 'includes')]
