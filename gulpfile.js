@@ -179,7 +179,7 @@ module.exports = function(gulp) {
 
     function ScriptsTask() {
         var jsSources = context.jsSources;
-        mainBowerFiles('**/bower_components/binarta.**/sources.json').forEach(function (src) {
+        mainBowerFiles('**/bower_components/binarta**/sources.json').forEach(function (src) {
             jsSources = nodeExtend(true, jsSources, require(src));
         });
         var sources = [
