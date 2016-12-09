@@ -28,6 +28,8 @@
     "minimist": "^1.1.0",
     "path": "^0.4.9",
     "node.extend": "^1.1.5",
-    "gulp-serve": "^1.2.0"
+    "gulp-serve": "^1.2.0",
+    "protractor": "^4.0.*",
+    "gulp-protractor": "^3.*.*"
   }
 }

@@ -24,6 +24,8 @@ var template = require('gulp-template'),
     templateCache = require('gulp-angular-templatecache'),
     serve = require('gulp-serve'),
     fs = require('fs'),
+    protractor = require('gulp-protractor').protractor,
+    webdriver_update = require('gulp-protractor'). webdriver_update,
     workingDir = process.cwd();
 
 module.exports = function (gulp) {
@@ -33,6 +35,7 @@ module.exports = function (gulp) {
         boolean: 'blog',
         boolean: 'shop',
         boolean: 'paypal',
+        boolean: 'e2e',
         string: 'subscription',
         string: 'port',
         default: {
@@ -184,14 +187,15 @@ module.exports = function (gulp) {
             jsSources = nodeExtend(true, jsSources, require(src));
         });
         var sources = [
-            {type: 'init', predicate: true},
-            {type: 'default', predicate: true},
-            {type: 'blog', predicate: context.blog},
-            {type: 'catalog', predicate: context.catalog},
-            {type: 'shop', predicate: context.shop},
-            {type: 'paypal', predicate: context.paypal},
-            {type: 'professional', predicate: context.professional},
-            {type: 'enterprise', predicate: context.enterprise}
+            {type:'init', predicate:true},
+            {type:'default', predicate:true},
+            {type:'blog', predicate:context.blog},
+            {type:'catalog', predicate:context.catalog},
+            {type:'shop', predicate:context.shop},
+            {type:'paypal', predicate:context.paypal},
+            {type:'professional', predicate:context.professional},
+            {type:'enterprise', predicate:context.enterprise},
+            {type: 'e2e', predicate:options.e2e},
         ].reduce(extractRequiredSourcesFrom(jsSources), {});
         return gulp.src(valuesForObject(sources))
             .pipe(concat('libs.js'))
@@ -313,6 +317,19 @@ module.exports = function (gulp) {
 
     gulp.task('update.serve', ['update.watch'], ServeTask());
     gulp.task('serve', ['watch'], ServeTask());
-
     gulp.task('default', ['update.build']);
+
+    gulp.task('e2e.serve', ['webdriver_update', 'deploy'], ServeTask());
+
+    gulp.task('test', ['e2e.serve'], function(){
+        gulp.src('test.js')
+            .pipe(protractor({
+                configFile: 'test/e2e/conf.js'
+            }))
+            .on('error', function (e) {
+                throw e;
+            });
+    });
+
+    gulp.task('webdriver_update', webdriver_update);
 };
