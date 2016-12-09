@@ -26,7 +26,7 @@ var template = require('gulp-template'),
     fs = require('fs'),
     workingDir = process.cwd();
 
-module.exports = function(gulp) {
+module.exports = function (gulp) {
     var knownOptions = {
         string: 'env',
         boolean: 'catalog',
@@ -139,6 +139,7 @@ module.exports = function(gulp) {
         return gulp.src(['src/mail/**/*.template'])
             .pipe(gulp.dest('build/mail'));
     }
+
     gulp.task('update.mails', ['update.copy.bower.mails'], MailsTask);
     gulp.task('mails', ['copy.bower.mails'], MailsTask);
 
@@ -183,14 +184,14 @@ module.exports = function(gulp) {
             jsSources = nodeExtend(true, jsSources, require(src));
         });
         var sources = [
-            {type:'init', predicate:true},
-            {type:'default', predicate:true},
-            {type:'blog', predicate:context.blog},
-            {type:'catalog', predicate:context.catalog},
-            {type:'shop', predicate:context.shop},
-            {type:'paypal', predicate:context.paypal},
-            {type:'professional', predicate:context.professional},
-            {type:'enterprise', predicate:context.enterprise}
+            {type: 'init', predicate: true},
+            {type: 'default', predicate: true},
+            {type: 'blog', predicate: context.blog},
+            {type: 'catalog', predicate: context.catalog},
+            {type: 'shop', predicate: context.shop},
+            {type: 'paypal', predicate: context.paypal},
+            {type: 'professional', predicate: context.professional},
+            {type: 'enterprise', predicate: context.enterprise}
         ].reduce(extractRequiredSourcesFrom(jsSources), {});
         return gulp.src(valuesForObject(sources))
             .pipe(concat('libs.js'))
@@ -199,8 +200,8 @@ module.exports = function(gulp) {
     }
 
     function extractRequiredSourcesFrom(src) {
-        return function(p,c) {
-            if (c.predicate) Object.keys(src[c.type] || {}).forEach(function(k) {
+        return function (p, c) {
+            if (c.predicate) Object.keys(src[c.type] || {}).forEach(function (k) {
                 p[k] = src[c.type][k];
             });
             return p;
@@ -208,7 +209,7 @@ module.exports = function(gulp) {
     }
 
     function valuesForObject(obj) {
-        return Object.keys(obj).reduce(function(p,c) {
+        return Object.keys(obj).reduce(function (p, c) {
             if (!fs.existsSync(obj[c]))
                 throw new Error('File not found: ' + obj[c]);
             p.push(obj[c]);
@@ -224,10 +225,10 @@ module.exports = function(gulp) {
     });
 
     function CompileLessTask() {
-        var autoprefix = new LessAutoprefix({ browsers: ['last 2 versions'] });
+        var autoprefix = new LessAutoprefix({browsers: ['last 2 versions']});
         var cleanCSS = new LessPluginCleanCSS({advanced: true});
 
-        return streamqueue({ objectMode: true },
+        return streamqueue({objectMode: true},
             gulp.src('bower.json').pipe(gulpMainBowerFiles('**/bower_components/binarta.**/less/*.less')),
             gulp.src('src/web/styles/combined.less')
         )
@@ -238,6 +239,7 @@ module.exports = function(gulp) {
             .pipe(concat('app.css'))
             .pipe(gulp.dest('build/dist/styles'));
     }
+
     gulp.task('update.less', ['update'], CompileLessTask);
     gulp.task('less', ['clean', 'compileBowerConfig'], CompileLessTask);
     gulp.task('livereload.less', function () {
@@ -254,6 +256,7 @@ module.exports = function(gulp) {
             .pipe(minifyInline())
             .pipe(gulp.dest('build/dist'));
     }
+
     gulp.task('compile.web.templates', ['dirty.scripts', 'dirty.partials'], CompileWebTemplatesTask);
     gulp.task('templates', ['clean'], CompileWebTemplatesTask);
 
@@ -266,6 +269,7 @@ module.exports = function(gulp) {
             .pipe(uglify())
             .pipe(gulp.dest('build/dist/scripts'));
     }
+
     gulp.task('partials', ['clean'], PartialsTask);
     gulp.task('dirty.partials', PartialsTask);
     gulp.task('livereload.partials', function () {
@@ -284,6 +288,7 @@ module.exports = function(gulp) {
             }))
             .pipe(gulp.dest('build/dist'));
     }
+
     gulp.task('update.deploy', ['update.build'], DeployTask);
     gulp.task('deploy', ['clean', 'build'], DeployTask);
 
@@ -295,15 +300,17 @@ module.exports = function(gulp) {
         gulp.watch('src/web/scripts/**/*.js', ['livereload.scripts']);
         gulp.watch('src/web/metadata*.json', ['livereload.metadata']);
     }
+
     gulp.task('update.watch', ['update.deploy'], WatchTask);
     gulp.task('watch', ['deploy'], WatchTask);
 
     function ServeTask() {
         return serve({
-            root:['build/dist'],
+            root: ['build/dist'],
             port: options.port
         });
     }
+
     gulp.task('update.serve', ['update.watch'], ServeTask());
     gulp.task('serve', ['watch'], ServeTask());
 
