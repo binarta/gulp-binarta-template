@@ -1,6 +1,6 @@
 {
   "name": "gulp-binarta-template",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "dependencies": {
     "del": {
       "version": "1.2.1",
