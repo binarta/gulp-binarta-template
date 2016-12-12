@@ -126,9 +126,9 @@ module.exports = function(gulp) {
     });
 
     function CopyBowerMailsTask() {
-        return gulp.src(mainBowerFiles())
-            .pipe(filter('**/*.template.mail'))
+        return gulp.src(binartaModulesPathPrefix + '**/*.template.mail')
             .pipe(rename(function (path) {
+                path.dirname = '';
                 path.extname = '.template';
             }))
             .pipe(gulp.dest("build/mail/"));
