@@ -145,8 +145,7 @@ module.exports = function(gulp) {
     gulp.task('mails', ['copy.bower.mails'], MailsTask);
 
     function MetadataSystemTask() {
-        return gulp.src(mainBowerFiles().concat(context.sources))
-            .pipe(filter('**/metadata-system.json'))
+        return gulp.src([binartaModulesPathPrefix + '**/metadata-system.json', 'src/web/metadata-system.json'])
             .pipe(extend('metadata-system.json'))
             .pipe(gulp.dest("build/dist/"));
     }
@@ -156,8 +155,7 @@ module.exports = function(gulp) {
     gulp.task('dirty.metadata-system', ['compileBowerConfig'], MetadataSystemTask);
 
     function MetadataAppTask() {
-        return gulp.src(mainBowerFiles().concat(context.sources))
-            .pipe(filter('**/metadata-app.json'))
+        return gulp.src([binartaModulesPathPrefix + '**/metadata-app.json', 'src/web/metadata-app.json'])
             .pipe(extend('metadata-app.json'))
             .pipe(gulp.dest("build/dist/"));
     }
@@ -167,8 +165,7 @@ module.exports = function(gulp) {
     gulp.task('dirty.metadata-app', ['compileBowerConfig'], MetadataAppTask);
 
     function MetadataTask() {
-        return gulp.src(mainBowerFiles().concat(context.sources))
-            .pipe(filter('**/metadata.json'))
+        return gulp.src([binartaModulesPathPrefix + '**/metadata.json', 'src/web/metadata.json'])
             .pipe(extend('metadata.json'))
             .pipe(gulp.dest("build/dist/"));
     }
