@@ -2,7 +2,6 @@ var template = require('gulp-template'),
     data = require('gulp-data'),
     rename = require('gulp-rename'),
     del = require('del'),
-    version = new Date().getTime(),
     minimist = require('minimist'),
     bower = require('gulp-bower'),
     concat = require('gulp-concat'),
@@ -13,10 +12,6 @@ var template = require('gulp-template'),
     path = require('path'),
     livereload = require('gulp-livereload'),
     gulpif = require('gulp-if'),
-    mainBowerFiles = require('main-bower-files'),
-    gulpMainBowerFiles = require('gulp-main-bower-files'),
-    streamqueue = require('streamqueue'),
-    filter = require('gulp-filter'),
     extend = require('gulp-extend'),
     nodeExtend = require('node.extend'),
     minifyHtml = require('gulp-minify-html'),
@@ -24,6 +19,7 @@ var template = require('gulp-template'),
     templateCache = require('gulp-angular-templatecache'),
     serve = require('gulp-serve'),
     fs = require('fs'),
+    version = new Date().getTime(),
     glob = require('glob'),
     workingDir = process.cwd(),
     binartaModulesPathPrefix = 'bower_components/binarta*/';
@@ -226,10 +222,7 @@ module.exports = function(gulp) {
         var autoprefix = new LessAutoprefix({ browsers: ['last 2 versions'] });
         var cleanCSS = new LessPluginCleanCSS({advanced: true});
 
-        return streamqueue({ objectMode: true },
-            gulp.src('bower.json').pipe(gulpMainBowerFiles('**/bower_components/binarta.**/less/*.less')),
-            gulp.src('src/web/styles/combined.less')
-        )
+        return gulp.src([binartaModulesPathPrefix + 'less/*.less', 'src/web/styles/combined.less'])
             .pipe(less({
                 plugins: [autoprefix, cleanCSS],
                 paths: [path.join(__dirname, 'less', 'includes')]
