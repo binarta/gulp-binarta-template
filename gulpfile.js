@@ -24,7 +24,9 @@ var template = require('gulp-template'),
     templateCache = require('gulp-angular-templatecache'),
     serve = require('gulp-serve'),
     fs = require('fs'),
-    workingDir = process.cwd();
+    glob = require('glob'),
+    workingDir = process.cwd(),
+    binartaModulesPathPrefix = 'bower_components/binarta*/';
 
 module.exports = function(gulp) {
     var knownOptions = {
@@ -179,8 +181,8 @@ module.exports = function(gulp) {
 
     function ScriptsTask() {
         var jsSources = context.jsSources;
-        mainBowerFiles('**/bower_components/binarta**/sources.json').forEach(function (src) {
-            jsSources = nodeExtend(true, jsSources, require(src));
+        glob.sync(binartaModulesPathPrefix + 'sources.json').forEach(function (src) {
+            jsSources = nodeExtend(true, jsSources, require(workingDir + '/' + src));
         });
         var sources = [
             {type:'init', predicate:true},
