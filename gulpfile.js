@@ -314,13 +314,16 @@ module.exports = function (gulp) {
 
     gulp.task('e2e.serve', ['webdriver_update', 'deploy'], ServeTask());
 
-    gulp.task('test', ['e2e.serve'], function () {
+    gulp.task('test', ['e2e.serve'], function (cb) {
+        process.on('exit', cb);
+
         gulp.src('test.js')
-            .pipe(protractor({
-                configFile: 'test/e2e/conf.js'
-            }))
+            .pipe(protractor({configFile: 'test/e2e/conf.js'}))
             .on('error', function (e) {
                 throw e;
+            })
+            .on('end', function () {
+                process.exit();
             });
     });
 
