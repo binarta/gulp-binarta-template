@@ -17,6 +17,7 @@
     "gulp-livereload": "^2.1.1",
     "gulp-minify-html": "^1.0.3",
     "gulp-minify-inline": "^0.1.1",
+    "gulp-protractor": "^3.*.*",
     "gulp-rename": "^1.2.0",
     "gulp-serve": "^1.2.0",
     "gulp-template": "^1.1.1",
@@ -26,7 +27,7 @@
     "minimist": "^1.1.0",
     "node.extend": "^1.1.5",
     "path": "^0.4.9",
-    "protractor": "^4.0.*",
-    "gulp-protractor": "^3.*.*"
+    "phantomjs": "^2.1.7",
+    "protractor": "^4.0.*"
   }
 }
