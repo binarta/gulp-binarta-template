@@ -27,7 +27,7 @@
     "minimist": "^1.1.0",
     "node.extend": "^1.1.5",
     "path": "^0.4.9",
-    "phantomjs": "^2.1.7",
+    "phantomjs-prebuilt": "^2.1.14",
     "protractor": "^4.0.*"
   }
 }
