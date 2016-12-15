@@ -1,6 +1,6 @@
 {
   "name": "gulp-binarta-template",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "dependencies": {
     "@types/jasmine": {
       "version": "2.5.38",
