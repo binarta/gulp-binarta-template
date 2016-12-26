@@ -33,7 +33,6 @@ module.exports = function (gulp) {
         boolean: 'blog',
         boolean: 'shop',
         boolean: 'paypal',
-        boolean: 'e2e',
         string: 'subscription',
         string: 'port',
         default: {
@@ -54,7 +53,7 @@ module.exports = function (gulp) {
 
     var context = require(workingDir + '/config.json');
     context.version = options.env == 'dev' ? 0 : version;
-    context.e2e = options.e2e;
+    context.e2e = options.env == 'e2e';
 
     Object.keys(context.environments[options.env]).forEach(function (k) {
         context[k] = context.environments[options.env][k];
@@ -191,7 +190,7 @@ module.exports = function (gulp) {
             {type: 'paypal', predicate: context.paypal},
             {type: 'professional', predicate: context.professional},
             {type: 'enterprise', predicate: context.enterprise},
-            {type: 'e2e', predicate: options.e2e},
+            {type: 'e2e', predicate: context.e2e},
         ].reduce(extractRequiredSourcesFrom(jsSources), {});
         return gulp.src(valuesForObject(sources))
             .pipe(concat('libs.js'))
