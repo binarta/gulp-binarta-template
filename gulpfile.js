@@ -10,15 +10,14 @@ var template = require('gulp-template'),
     LessAutoprefix = require('less-plugin-autoprefix'),
     LessPluginCleanCSS = require('less-plugin-clean-css'),
     path = require('path'),
-    livereload = require('gulp-livereload'),
     gulpif = require('gulp-if'),
     extend = require('gulp-extend'),
     nodeExtend = require('node.extend'),
     minifyHtml = require('gulp-minify-html'),
     minifyInline = require('gulp-minify-inline'),
     templateCache = require('gulp-angular-templatecache'),
-    serve = require('gulp-serve'),
     fs = require('fs'),
+    browserSync = require('browser-sync').create(),
     protractor = require('gulp-protractor').protractor,
     webdriver_update = require('gulp-protractor').webdriver_update,
     version = new Date().getTime(),
@@ -36,8 +35,7 @@ module.exports = function (gulp) {
         string: 'subscription',
         string: 'port',
         default: {
-            env: process.env.NODE_ENV || 'dev',
-            port: 3000
+            env: process.env.NODE_ENV || 'dev'
         }
     };
 
@@ -98,17 +96,19 @@ module.exports = function (gulp) {
         del(['bower_components'], cb);
     });
 
-    gulp.task('images', ['clean'], function () {
+    function copyImages() {
         return gulp.src(['src/web/img/**/*'])
             .pipe(gulp.dest('build/dist/img'));
-    });
+    }
+    gulp.task('images', ['clean'], copyImages);
+    gulp.task('copy.images', copyImages);
 
-    gulp.task('fonts', ['clean'], function () {
+    function copyFonts() {
         return gulp.src(['src/web/fonts/**/*'])
             .pipe(gulp.dest('build/dist/fonts'));
-    });
-
-    gulp.task('sources', ['images', 'fonts']);
+    }
+    gulp.task('fonts', ['clean'], copyFonts);
+    gulp.task('copy.fonts', ['clean'], copyFonts);
 
     gulp.task('compileBowerConfig', function () {
         return gulp.src('bower.json.template')
@@ -172,9 +172,7 @@ module.exports = function (gulp) {
 
     gulp.task('update.metadata', ['update', 'update.metadata-system', 'update.metadata-app'], MetadataTask);
     gulp.task('metadata', ['clean', 'compileBowerConfig', 'metadata-system', 'metadata-app'], MetadataTask);
-    gulp.task('livereload.metadata', ['dirty.metadata-system', 'dirty.metadata-app'], function () {
-        return MetadataTask().pipe(livereload());
-    });
+    gulp.task('dirty.metadata', ['dirty.metadata-system', 'dirty.metadata-app'], MetadataTask);
 
     function ScriptsTask() {
         var jsSources = context.jsSources;
@@ -219,9 +217,6 @@ module.exports = function (gulp) {
     gulp.task('update.scripts', ['update'], ScriptsTask);
     gulp.task('scripts', ['clean', 'compileBowerConfig'], ScriptsTask);
     gulp.task('dirty.scripts', ['compileBowerConfig'], ScriptsTask);
-    gulp.task('livereload.scripts', function () {
-        return ScriptsTask().pipe(livereload());
-    });
 
     function CompileLessTask() {
         var autoprefix = new LessAutoprefix({browsers: ['last 2 versions']});
@@ -238,9 +233,7 @@ module.exports = function (gulp) {
 
     gulp.task('update.less', ['update'], CompileLessTask);
     gulp.task('less', ['clean', 'compileBowerConfig'], CompileLessTask);
-    gulp.task('livereload.less', function () {
-        return CompileLessTask().pipe(livereload());
-    });
+    gulp.task('dirty.less', CompileLessTask);
 
     function CompileWebTemplatesTask() {
         return gulp.src('src/web/**/*.template')
@@ -268,12 +261,9 @@ module.exports = function (gulp) {
 
     gulp.task('partials', ['clean'], PartialsTask);
     gulp.task('dirty.partials', PartialsTask);
-    gulp.task('livereload.partials', function () {
-        return PartialsTask().pipe(livereload());
-    });
 
-    gulp.task('update.build', ['sources', 'partials', 'templates', 'update.scripts', 'update.less', 'update.metadata', 'update.mails']);
-    gulp.task('build', ['sources', 'partials', 'templates', 'scripts', 'less', 'metadata', 'mails']);
+    gulp.task('update.build', ['images', 'fonts', 'partials', 'templates', 'update.scripts', 'update.less', 'update.metadata', 'update.mails']);
+    gulp.task('build', ['images', 'fonts', 'partials', 'templates', 'scripts', 'less', 'metadata', 'mails']);
 
     function DeployTask() {
         return gulp.src('build/dist/**/*.template')
@@ -288,30 +278,30 @@ module.exports = function (gulp) {
     gulp.task('update.deploy', ['update.build'], DeployTask);
     gulp.task('deploy', ['clean', 'build'], DeployTask);
 
-    function WatchTask() {
-        livereload.listen();
-
-        gulp.watch('src/web/styles/**/*.less', ['livereload.less']);
-        gulp.watch('src/web/partials/**/*.html', ['livereload.partials']);
-        gulp.watch('src/web/scripts/**/*.js', ['livereload.scripts']);
-        gulp.watch('src/web/metadata*.json', ['livereload.metadata']);
-    }
-
-    gulp.task('update.watch', ['update.deploy'], WatchTask);
-    gulp.task('watch', ['deploy'], WatchTask);
+    gulp.task('watch', function () {
+        gulp.watch('src/web/img/**/*', ['copy.images']);
+        gulp.watch('src/web/fonts/**/*', ['copy.fonts']);
+        gulp.watch('src/web/partials/**/*.html', ['dirty.partials']);
+        gulp.watch(['src/web/scripts/**/*', 'bower_components/**/*.js'], ['dirty.scripts']);
+        gulp.watch(['src/web/styles/**/*', 'bower_components/**/*.less'], ['dirty.less']);
+        gulp.watch('src/web/metadata*.json', ['dirty.metadata']);
+    });
 
     function ServeTask() {
-        return serve({
-            root: ['build/dist'],
-            port: options.port
+        browserSync.init({
+            files: './build/dist/**/*',
+            server: {
+                baseDir: './build/dist'
+            },
+            open: false,
+            notify: false
         });
     }
 
-    gulp.task('update.serve', ['update.watch'], ServeTask());
-    gulp.task('serve', ['watch'], ServeTask());
+    gulp.task('serve', ['deploy', 'watch'], ServeTask);
     gulp.task('default', ['update.build']);
 
-    gulp.task('e2e.serve', ['webdriver_update', 'deploy'], ServeTask());
+    gulp.task('e2e.serve', ['webdriver_update', 'deploy'], ServeTask);
 
     gulp.task('test', ['e2e.serve'], function (cb) {
         process.on('exit', cb);
