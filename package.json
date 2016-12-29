@@ -1,6 +1,6 @@
 {
   "name": "gulp-binarta-template",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "gulp build for Binarta templates",
   "main": "gulpfile.js",
   "repository": "binarta/gulp-binarta-template",
