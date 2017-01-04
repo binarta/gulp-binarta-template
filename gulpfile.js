@@ -96,19 +96,21 @@ module.exports = function (gulp) {
         del(['bower_components'], cb);
     });
 
-    function copyImages() {
+    function images() {
         return gulp.src(['src/web/img/**/*'])
             .pipe(gulp.dest('build/dist/img'));
     }
-    gulp.task('images', ['clean'], copyImages);
-    gulp.task('copy.images', copyImages);
+    gulp.task('images', ['clean'], images);
+    gulp.task('dirty.images', images);
 
-    function copyFonts() {
-        return gulp.src(['src/web/fonts/**/*'])
-            .pipe(gulp.dest('build/dist/fonts'));
+    function fonts() {
+        var fonts = context.fonts || [];
+        fonts.push('src/web/fonts/**/*');
+        return gulp.src(fonts).pipe(gulp.dest('build/dist/fonts'));
     }
-    gulp.task('fonts', ['clean'], copyFonts);
-    gulp.task('copy.fonts', ['clean'], copyFonts);
+    gulp.task('update.fonts', ['update'], fonts);
+    gulp.task('fonts', ['clean'], fonts);
+    gulp.task('dirty.fonts', fonts);
 
     gulp.task('compileBowerConfig', function () {
         return gulp.src('bower.json.template')
@@ -262,7 +264,7 @@ module.exports = function (gulp) {
     gulp.task('partials', ['clean'], PartialsTask);
     gulp.task('dirty.partials', PartialsTask);
 
-    gulp.task('update.build', ['images', 'fonts', 'partials', 'templates', 'update.scripts', 'update.less', 'update.metadata', 'update.mails']);
+    gulp.task('update.build', ['images', 'update.fonts', 'partials', 'templates', 'update.scripts', 'update.less', 'update.metadata', 'update.mails']);
     gulp.task('build', ['images', 'fonts', 'partials', 'templates', 'scripts', 'less', 'metadata', 'mails']);
 
     function DeployTask() {
@@ -279,8 +281,8 @@ module.exports = function (gulp) {
     gulp.task('deploy', ['clean', 'build'], DeployTask);
 
     gulp.task('watch', function () {
-        gulp.watch('src/web/img/**/*', ['copy.images']);
-        gulp.watch('src/web/fonts/**/*', ['copy.fonts']);
+        gulp.watch('src/web/img/**/*', ['dirty.images']);
+        gulp.watch('src/web/fonts/**/*', ['dirty.fonts']);
         gulp.watch('src/web/partials/**/*.html', ['dirty.partials']);
         gulp.watch(['src/web/scripts/**/*', 'bower_components/**/*.js'], ['dirty.scripts']);
         gulp.watch(['src/web/styles/**/*', 'bower_components/**/*.less'], ['dirty.less']);
