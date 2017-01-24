@@ -28,6 +28,7 @@ var template = require('gulp-template'),
 module.exports = function (gulp) {
     var knownOptions = {
         string: 'env',
+        boolean: 'html5',
         boolean: 'catalog',
         boolean: 'blog',
         boolean: 'shop',
@@ -73,6 +74,10 @@ module.exports = function (gulp) {
     if (userContext.blog != undefined) context.blog = userContext.blog;
     else if (options.blog != undefined) context.blog = options.blog;
     if (context.blog == undefined) context.blog = true;
+
+    if (userContext.html5 != undefined) context.html5 = userContext.html5;
+    else if (options.html5 != undefined) context.html5 = options.html5;
+    if (context.html5 == undefined) context.html5 = false;
 
     if (userContext.catalog != undefined) context.catalog = userContext.catalog;
     else if (options.catalog != undefined) context.catalog = options.catalog;
@@ -184,6 +189,7 @@ module.exports = function (gulp) {
         var sources = [
             {type: 'init', predicate: true},
             {type: 'default', predicate: true},
+            {type: 'html5', predicate: context.html5},
             {type: 'blog', predicate: context.blog},
             {type: 'catalog', predicate: context.catalog},
             {type: 'shop', predicate: context.shop},
