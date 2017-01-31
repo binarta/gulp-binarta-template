@@ -196,7 +196,7 @@ module.exports = function (gulp) {
             {type: 'paypal', predicate: context.paypal},
             {type: 'professional', predicate: context.professional},
             {type: 'enterprise', predicate: context.enterprise},
-            {type: 'e2e', predicate: context.e2e},
+            {type: 'e2e', predicate: context.e2e}
         ].reduce(extractRequiredSourcesFrom(jsSources), {});
         return gulp.src(valuesForObject(sources))
             .pipe(concat('libs.js'))
