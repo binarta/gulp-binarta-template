@@ -51,7 +51,7 @@ module.exports = function (gulp) {
     var options = minimist(process.argv.slice(2), knownOptions);
 
     var context = require(workingDir + '/config.json');
-    context.version = options.env == 'dev' ? 0 : version;
+    context.version = version;
     context.e2e = options.env == 'e2e';
 
     Object.keys(context.environments[options.env]).forEach(function (k) {
