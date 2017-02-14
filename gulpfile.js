@@ -302,7 +302,8 @@ module.exports = function (gulp) {
                 baseDir: './build/dist'
             },
             open: false,
-            notify: false
+            notify: false,
+            ghostMode: false
         });
     }
 
