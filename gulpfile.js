@@ -257,6 +257,14 @@ module.exports = function (gulp) {
     gulp.task('compile.web.templates', ['dirty.scripts', 'dirty.partials'], CompileWebTemplatesTask);
     gulp.task('templates', ['clean'], CompileWebTemplatesTask);
 
+    function FtlTemplatesCopyForBackwardsCompatibility() {
+        return gulp.src('build/dist/index.ftl.template')
+            .pipe(rename('index.html.template'))
+            .pipe(gulp.dest('build/dist/'));
+    }
+
+    gulp.task('ftl.templates', ['templates'], FtlTemplatesCopyForBackwardsCompatibility);
+
     function PartialsTask() {
         return gulp.src('src/web/partials/**/*.html')
             .pipe(data(context))
@@ -270,8 +278,8 @@ module.exports = function (gulp) {
     gulp.task('partials', ['clean'], PartialsTask);
     gulp.task('dirty.partials', PartialsTask);
 
-    gulp.task('update.build', ['images', 'update.fonts', 'partials', 'templates', 'update.scripts', 'update.less', 'update.metadata', 'update.mails']);
-    gulp.task('build', ['images', 'fonts', 'partials', 'templates', 'scripts', 'less', 'metadata', 'mails']);
+    gulp.task('update.build', ['images', 'update.fonts', 'partials', 'ftl.templates', 'update.scripts', 'update.less', 'update.metadata', 'update.mails']);
+    gulp.task('build', ['images', 'fonts', 'partials', 'ftl.templates', 'scripts', 'less', 'metadata', 'mails']);
 
     function DeployTask() {
         return gulp.src('build/dist/**/*.template')
