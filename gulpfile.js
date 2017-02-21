@@ -254,7 +254,7 @@ module.exports = function (gulp) {
             .pipe(gulp.dest('build/dist'));
     }
 
-    gulp.task('compile.web.templates', ['dirty.scripts', 'dirty.partials'], CompileWebTemplatesTask);
+    gulp.task('dirty.templates', ['dirty.scripts', 'dirty.partials'], CompileWebTemplatesTask);
     gulp.task('templates', ['clean'], CompileWebTemplatesTask);
 
     function FtlTemplatesCopyForBackwardsCompatibility() {
@@ -264,6 +264,7 @@ module.exports = function (gulp) {
     }
 
     gulp.task('ftl.templates', ['templates'], FtlTemplatesCopyForBackwardsCompatibility);
+    gulp.task('compile.web.templates', ['dirty.templates'], FtlTemplatesCopyForBackwardsCompatibility);
 
     function PartialsTask() {
         return gulp.src('src/web/partials/**/*.html')
