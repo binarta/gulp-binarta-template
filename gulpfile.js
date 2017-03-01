@@ -102,8 +102,9 @@ module.exports = function (gulp) {
     });
 
     function images() {
-        return gulp.src(['src/web/img/**/*'])
-            .pipe(gulp.dest('build/dist/img'));
+        var images = context.images || [];
+        images.push('src/web/img/**/*');
+        return gulp.src(images).pipe(gulp.dest('build/dist/img'));
     }
     gulp.task('images', ['clean'], images);
     gulp.task('dirty.images', images);
