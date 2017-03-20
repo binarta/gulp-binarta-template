@@ -9,6 +9,7 @@ var template = require('gulp-template'),
     less = require('gulp-less'),
     LessAutoprefix = require('less-plugin-autoprefix'),
     LessPluginCleanCSS = require('less-plugin-clean-css'),
+    lessPluginGlob = require('less-plugin-glob'),
     path = require('path'),
     gulpif = require('gulp-if'),
     extend = require('gulp-extend'),
@@ -233,7 +234,7 @@ module.exports = function (gulp) {
 
         return gulp.src([binartaModulesPathPrefix + 'less/*.less', 'src/web/styles/combined.less'])
             .pipe(less({
-                plugins: [autoprefix, cleanCSS],
+                plugins: [autoprefix, cleanCSS, lessPluginGlob],
                 paths: [path.join(__dirname, 'less', 'includes')]
             }))
             .pipe(concat('app.css'))
