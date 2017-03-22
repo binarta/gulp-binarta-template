@@ -19,6 +19,7 @@ var template = require('gulp-template'),
     templateCache = require('gulp-angular-templatecache'),
     fs = require('fs'),
     browserSync = require('browser-sync').create(),
+    historyApiFallback = require('connect-history-api-fallback'),
     protractor = require('gulp-protractor').protractor,
     webdriver_update = require('gulp-protractor').webdriver_update,
     version = new Date().getTime(),
@@ -310,7 +311,8 @@ module.exports = function (gulp) {
         browserSync.init({
             files: './build/dist/**/*',
             server: {
-                baseDir: './build/dist'
+                baseDir: './build/dist',
+                middleware: [historyApiFallback()]
             },
             open: false,
             notify: false,
