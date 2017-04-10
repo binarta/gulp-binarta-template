@@ -1,6 +1,7 @@
 var template = require('gulp-template'),
     data = require('gulp-data'),
     rename = require('gulp-rename'),
+    replace = require('gulp-replace'),
     del = require('del'),
     minimist = require('minimist'),
     bower = require('gulp-bower'),
@@ -289,6 +290,10 @@ module.exports = function (gulp) {
         return gulp.src('build/dist/**/*.template')
             .pipe(data(context))
             .pipe(template())
+            .pipe(replace(/<@link/g, '<link'))
+            .pipe(replace(/<\/@link>/g, ''))
+            .pipe(replace(/<@script/g, '<script'))
+            .pipe(replace(/<\/@script>/g, '</script>'))
             .pipe(rename(function (path) {
                 path.extname = '';
             }))

@@ -21,6 +21,7 @@
     "gulp-protractor": "^3.*.*",
     "gulp-rename": "^1.2.0",
     "gulp-template": "^1.1.1",
+    "gulp-replace": "^0.5.4",
     "gulp-uglify": "^1.0.2",
     "less-plugin-autoprefix": "^1.5.1",
     "less-plugin-clean-css": "^1.5.1",
