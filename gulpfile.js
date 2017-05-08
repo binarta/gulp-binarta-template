@@ -294,6 +294,8 @@ module.exports = function (gulp) {
             .pipe(replace(/<\/@link>/g, ''))
             .pipe(replace(/<@script/g, '<script'))
             .pipe(replace(/<\/@script>/g, '</script>'))
+            .pipe(replace(/<@application_profile>/g, ''))
+            .pipe(replace(/<\/@application_profile>/g, '</script>'))
             .pipe(rename(function (path) {
                 path.extname = '';
             }))
