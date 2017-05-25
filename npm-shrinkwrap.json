@@ -2091,6 +2091,11 @@
       "from": "gulp-rename@1.2.2",
       "resolved": "https://registry.npmjs.org/gulp-rename/-/gulp-rename-1.2.2.tgz"
     },
+    "gulp-replace": {
+      "version": "0.5.4",
+      "from": "gulp-replace@0.5.4",
+      "resolved": "https://registry.npmjs.org/gulp-replace/-/gulp-replace-0.5.4.tgz"
+    },
     "gulp-template": {
       "version": "1.1.1",
       "from": "gulp-template@1.1.1",
