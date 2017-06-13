@@ -296,6 +296,18 @@ module.exports = function (gulp) {
             .pipe(replace(/<\/@script>/g, '</script>'))
             .pipe(replace(/<@application_profile>/g, ''))
             .pipe(replace(/<\/@application_profile>/g, '</script>'))
+            .pipe(replace(/<@og_site_name>/g, ''))
+            .pipe(replace(/<\/@og_site_name>/g, ''))
+            .pipe(replace(/<@og_title>/g, ''))
+            .pipe(replace(/<\/@og_title>/g, ''))
+            .pipe(replace(/<@og_description>/g, ''))
+            .pipe(replace(/<\/@og_description>/g, ''))
+            .pipe(replace(/<@og_image>/g, ''))
+            .pipe(replace(/<\/@og_image>/g, ''))
+            .pipe(replace(/<@og_url>/g, ''))
+            .pipe(replace(/<\/@og_url>/g, ''))
+            .pipe(replace(/<@og_locale>/g, ''))
+            .pipe(replace(/<\/@og_locale>/g, ''))
             .pipe(rename(function (path) {
                 path.extname = '';
             }))
