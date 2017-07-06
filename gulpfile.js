@@ -32,6 +32,10 @@ module.exports = function (gulp) {
     var knownOptions = {
         string: 'env',
         boolean: 'html5',
+        boolean: 'about',
+        boolean: 'testimonials',
+        boolean: 'approach',
+        boolean: 'gallery',
         boolean: 'catalog',
         boolean: 'blog',
         boolean: 'shop',
@@ -73,10 +77,27 @@ module.exports = function (gulp) {
     context.subscription = options.subscription || userContext.subscription || context.subscription;
     context.enterprise = options.subscription == 'enterprise' || userContext.subscription == 'enterprise' || context.subscription == 'enterprise';
     context.professional = options.subscription == 'professional' || userContext.subscription == 'professional' || context.subscription == 'professional' || context.enterprise;
+    context.essential = options.subscription == 'essential' || userContext.subscription == 'essential' || context.subscription == 'essential' || context.professional || context.enterprise;
 
     if (userContext.blog != undefined) context.blog = userContext.blog;
     else if (options.blog != undefined) context.blog = options.blog;
-    if (context.blog == undefined) context.blog = true;
+    if (context.blog == undefined) context.blog = context.essential;
+
+    if (userContext.about != undefined) context.about = userContext.about;
+    else if (options.about != undefined) context.about = options.about;
+    if (context.about == undefined) context.about = context.essential;
+
+    if (userContext.testimonials != undefined) context.testimonials = userContext.testimonials;
+    else if (options.testimonials != undefined) context.testimonials = options.testimonials;
+    if (context.testimonials == undefined) context.testimonials = context.essential;
+
+    if (userContext.approach != undefined) context.approach = userContext.approach;
+    else if (options.approach != undefined) context.approach = options.approach;
+    if (context.approach == undefined) context.approach = context.essential;
+
+    if (userContext.gallery != undefined) context.gallery = userContext.gallery;
+    else if (options.gallery != undefined) context.gallery = options.gallery;
+    if (context.gallery == undefined) context.gallery = context.essential;
 
     if (userContext.html5 != undefined) context.html5 = userContext.html5;
     else if (options.html5 != undefined) context.html5 = options.html5;
