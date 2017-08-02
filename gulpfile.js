@@ -339,12 +339,21 @@ module.exports = function (gulp) {
     gulp.task('deploy', ['clean', 'build'], DeployTask);
 
     gulp.task('watch', function () {
-        gulp.watch('src/web/img/**/*', ['dirty.images']);
-        gulp.watch('src/web/fonts/**/*', ['dirty.fonts']);
-        gulp.watch('src/web/**/*.html', ['dirty.partials']);
-        gulp.watch(['src/web/**/*.js', 'bower_components/**/*.js'], ['dirty.scripts']);
-        gulp.watch(['src/web/**/*.less', 'bower_components/**/*.less'], ['dirty.less']);
-        gulp.watch('src/web/metadata*.json', ['dirty.metadata']);
+        gulp.watch('src/web/**/*', function (event) {
+            if (endsWith('.js')) runTask('dirty.scripts');
+            else if (endsWith('.html')) runTask('dirty.partials');
+            else if (endsWith('.less')) runTask('dirty.less');
+            else if (endsWith('.json')) runTask('dirty.metadata');
+
+            function endsWith(extension) {
+                return event.path.endsWith(extension);
+            }
+
+            function runTask(task) {
+                console.log(event.type + ' ' + event.path);
+                gulp.start(task);
+            }
+        });
     });
 
     function ServeTask() {
