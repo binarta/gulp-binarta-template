@@ -223,7 +223,9 @@ module.exports = function (gulp) {
             {type: 'enterprise', predicate: context.enterprise},
             {type: 'e2e', predicate: context.e2e}
         ].reduce(extractRequiredSourcesFrom(jsSources), {});
-        return gulp.src(valuesForObject(sources))
+        sources = valuesForObject(sources);
+        sources.push('src/web/components/**/*.js');
+        return gulp.src(sources)
             .pipe(concat('libs.js'))
             .pipe(gulpif(options.env != 'dev', uglify()))
             .pipe(gulp.dest('build/dist/scripts'));
@@ -292,7 +294,7 @@ module.exports = function (gulp) {
     gulp.task('compile.web.templates', ['dirty.templates'], FtlTemplatesCopyForBackwardsCompatibility);
 
     function PartialsTask() {
-        return gulp.src('src/web/partials/**/*.html')
+        return gulp.src(['src/web/partials/**/*.html', 'src/web/components/**/*.html'])
             .pipe(data(context))
             .pipe(template())
             .pipe(minifyHtml(minifyHtmlOpts))
@@ -339,9 +341,9 @@ module.exports = function (gulp) {
     gulp.task('watch', function () {
         gulp.watch('src/web/img/**/*', ['dirty.images']);
         gulp.watch('src/web/fonts/**/*', ['dirty.fonts']);
-        gulp.watch('src/web/partials/**/*.html', ['dirty.partials']);
-        gulp.watch(['src/web/scripts/**/*', 'bower_components/**/*.js'], ['dirty.scripts']);
-        gulp.watch(['src/web/styles/**/*', 'bower_components/**/*.less'], ['dirty.less']);
+        gulp.watch('src/web/**/*.html', ['dirty.partials']);
+        gulp.watch(['src/web/**/*.js', 'bower_components/**/*.js'], ['dirty.scripts']);
+        gulp.watch(['src/web/**/*.less', 'bower_components/**/*.less'], ['dirty.less']);
         gulp.watch('src/web/metadata*.json', ['dirty.metadata']);
     });
 
