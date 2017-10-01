@@ -63,13 +63,17 @@ module.exports = {
         }
 
         function CompileLessAppTask() {
-            return CompileLessTaskFactory('build/dist/styles/app.less', 'app.css', {
-                '@bin-primary-color': context.metadata.ui.primaryColor
-            })();
+            return CompileLessTaskFactory('build/dist/styles/app.less', 'app.css', getDefaultLessVars())();
         }
 
         function CompileLessCombined() {
-            return CompileLessTaskFactory([binartaModulesPathPrefix + 'less/*.less', 'src/web/styles/combined.less'], 'app.css')();
+            return CompileLessTaskFactory([binartaModulesPathPrefix + 'less/*.less', 'src/web/styles/combined.less'], 'app.css', getDefaultLessVars())();
+        }
+
+        function getDefaultLessVars() {
+            return {
+                '@bin-primary-color': context.metadata.ui.primaryColor
+            }
         }
     }
 };
