@@ -63,7 +63,9 @@ module.exports = {
         }
 
         function CompileLessAppTask() {
-            return CompileLessTaskFactory('build/dist/styles/app.less', 'app.css', {'@bin-theme': context.metadata.ui.primaryColor})();
+            return CompileLessTaskFactory('build/dist/styles/app.less', 'app.css', {
+                '@bin-primary-color': context.metadata.ui.primaryColor
+            })();
         }
 
         function CompileLessCombined() {
