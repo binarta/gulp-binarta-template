@@ -7,11 +7,6 @@ var template = require('gulp-template'),
     bower = require('gulp-bower'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
-    less = require('gulp-less'),
-    LessAutoprefix = require('less-plugin-autoprefix'),
-    LessPluginCleanCSS = require('less-plugin-clean-css'),
-    lessPluginGlob = require('less-plugin-glob'),
-    path = require('path'),
     gulpif = require('gulp-if'),
     extend = require('gulp-extend'),
     nodeExtend = require('node.extend'),
@@ -26,7 +21,8 @@ var template = require('gulp-template'),
     version = new Date().getTime(),
     glob = require('glob'),
     workingDir = process.cwd(),
-    binartaModulesPathPrefix = 'bower_components/binarta*/';
+    binartaModulesPathPrefix = 'bower_components/binarta*/',
+    less = require('./less');
 
 module.exports = function (gulp) {
     var knownOptions = {
@@ -60,6 +56,8 @@ module.exports = function (gulp) {
     var context = require(workingDir + '/config.json');
     context.version = version;
     context.e2e = options.env == 'e2e';
+
+    less.init(context);
 
     Object.keys(context.environments[options.env]).forEach(function (k) {
         context[k] = context.environments[options.env][k];
@@ -253,22 +251,7 @@ module.exports = function (gulp) {
     gulp.task('scripts', ['clean', 'compileBowerConfig'], ScriptsTask);
     gulp.task('dirty.scripts', ['compileBowerConfig'], ScriptsTask);
 
-    function CompileLessTask() {
-        var autoprefix = new LessAutoprefix({browsers: ['last 2 versions']});
-        var cleanCSS = new LessPluginCleanCSS({advanced: true});
-
-        return gulp.src([binartaModulesPathPrefix + 'less/*.less', 'src/web/styles/combined.less'])
-            .pipe(less({
-                plugins: [autoprefix, cleanCSS, lessPluginGlob],
-                paths: [path.join(__dirname, 'less', 'includes')]
-            }))
-            .pipe(concat('app.css'))
-            .pipe(gulp.dest('build/dist/styles'));
-    }
-
-    gulp.task('update.less', ['update'], CompileLessTask);
-    gulp.task('less', ['clean', 'compileBowerConfig'], CompileLessTask);
-    gulp.task('dirty.less', CompileLessTask);
+    less.install(gulp, context);
 
     function CompileWebTemplatesTask() {
         return gulp.src('src/web/**/*.template')
@@ -306,8 +289,13 @@ module.exports = function (gulp) {
     gulp.task('partials', ['clean'], PartialsTask);
     gulp.task('dirty.partials', PartialsTask);
 
-    gulp.task('update.build', ['images', 'update.fonts', 'partials', 'ftl.templates', 'update.scripts', 'update.less', 'update.metadata', 'update.mails']);
-    gulp.task('build', ['images', 'fonts', 'partials', 'ftl.templates', 'scripts', 'less', 'metadata', 'mails']);
+    if (context.styleSources) {
+        gulp.task('update.build', ['images', 'update.fonts', 'partials', 'ftl.templates', 'update.scripts', 'update.compile.less.libs','update.concat.app.styles', 'update.metadata', 'update.mails']);
+        gulp.task('build', ['images', 'fonts', 'partials', 'ftl.templates', 'scripts', 'compile.less.libs', 'concat.app.styles', 'metadata', 'mails']);
+    } else {
+        gulp.task('update.build', ['images', 'update.fonts', 'partials', 'ftl.templates', 'update.scripts', 'update.less', 'update.metadata', 'update.mails']);
+        gulp.task('build', ['images', 'fonts', 'partials', 'ftl.templates', 'scripts', 'less', 'metadata', 'mails']);
+    }
 
     function DeployTask() {
         return gulp.src('build/dist/**/*.template')
@@ -335,8 +323,13 @@ module.exports = function (gulp) {
             .pipe(gulp.dest('build/dist'));
     }
 
-    gulp.task('update.deploy', ['update.build'], DeployTask);
-    gulp.task('deploy', ['clean', 'build'], DeployTask);
+    if (context.styleSources) {
+        gulp.task('update.deploy', ['update.build', 'update.compile.less.app'], DeployTask);
+        gulp.task('deploy', ['clean', 'build', 'compile.less.app'], DeployTask);
+    } else {
+        gulp.task('update.deploy', ['update.build'], DeployTask);
+        gulp.task('deploy', ['clean', 'build'], DeployTask);
+    }
 
     gulp.task('watch', function () {
         gulp.watch('src/web/**/*', function (event) {
