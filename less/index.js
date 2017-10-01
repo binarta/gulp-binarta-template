@@ -1,4 +1,4 @@
-let less = require('gulp-less'),
+var less = require('gulp-less'),
     LessAutoprefix = require('less-plugin-autoprefix'),
     LessPluginCleanCSS = require('less-plugin-clean-css'),
     lessPluginGlob = require('less-plugin-glob'),
@@ -11,7 +11,7 @@ module.exports = {
         context.styleSources = undefined;
     },
     install: function (gulp, context) {
-        let splitStyles = context.styleSources || false;
+        var splitStyles = context.styleSources || false;
 
         if (splitStyles) {
             gulp.task('dirty.compile.less.libs', CompileLessLibsTask);
@@ -40,10 +40,11 @@ module.exports = {
 
         }
 
-        function CompileLessTaskFactory(src, out, vars = {}) {
+        function CompileLessTaskFactory(src, out, vars) {
+            if (vars === undefined) vars = {};
             return function () {
-                let autoprefix = new LessAutoprefix({browsers: ['last 2 versions']});
-                let cleanCSS = new LessPluginCleanCSS({advanced: true});
+                var autoprefix = new LessAutoprefix({browsers: ['last 2 versions']});
+                var cleanCSS = new LessPluginCleanCSS({advanced: true});
 
                 return gulp.src(src)
                     .pipe(less({
