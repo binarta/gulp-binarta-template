@@ -351,7 +351,7 @@ module.exports = function (gulp) {
 
     function ServeTask() {
         browserSync.init({
-            files: './build/dist/**/*',
+            files: ['./build/dist/**/*.html', './build/dist/**/*.js', './build/dist/**/*.css'],
             server: {
                 baseDir: './build/dist',
                 middleware: [historyApiFallback()]
