@@ -49,7 +49,7 @@ module.exports = {
                 return gulp.src(src)
                     .pipe(less({
                         modifyVars: vars,
-                        plugins: [autoprefix, cleanCSS, lessPluginGlob],
+                        plugins: [autoprefix, cleanCSS, lessPluginGlob]
                     }))
                     .pipe(concat(out))
                     .pipe(gulp.dest('build/dist/styles'));
@@ -73,8 +73,8 @@ module.exports = {
 
         function getDefaultLessVars() {
             return {
-                '@bin-primary-color': context.metadata.ui.primaryColor
-            }
+                '@bin-primary-color': (context.metadata.ui && context.metadata.ui.primaryColor) ? context.metadata.ui.primaryColor : '#ffffff'
+            };
         }
     }
 };
