@@ -57,8 +57,6 @@ module.exports = function (gulp) {
     context.version = version;
     context.e2e = options.env == 'e2e';
 
-    less.init(context);
-
     Object.keys(context.environments[options.env]).forEach(function (k) {
         context[k] = context.environments[options.env][k];
     });

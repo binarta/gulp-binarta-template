@@ -7,9 +7,6 @@ var less = require('gulp-less'),
     binartaModulesPathPrefix = 'bower_components/binarta*/';
 
 module.exports = {
-    init: function(context) {
-        context.styleSources = undefined;
-    },
     install: function (gulp, context) {
         var splitStyles = context.styleSources || false;
 
