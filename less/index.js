@@ -4,13 +4,19 @@ var less = require('gulp-less'),
     lessPluginGlob = require('less-plugin-glob'),
     concat = require('gulp-concat'),
     deleteLines = require('gulp-delete-lines'),
+    glob = require('glob'),
+    workingDir = process.cwd(),
     binartaModulesPathPrefix = 'bower_components/binarta*/';
 
 module.exports = {
     install: function (gulp, context) {
-        var splitStyles = context.styleSources || false;
+        var styleSources = context.styleSources || false;
+        var libsSources, appSources;
 
-        if (splitStyles) {
+        if (styleSources) {
+            libsSources = getSources('libs');
+            appSources = getSources('app');
+
             gulp.task('dirty.compile.less.libs', CompileLessLibsTask);
             gulp.task('update.compile.less.libs', ['update'], CompileLessLibsTask);
             gulp.task('compile.less.libs', ['clean', 'compileBowerConfig'], CompileLessLibsTask);
@@ -32,8 +38,21 @@ module.exports = {
             gulp.task('dirty.less', CompileLessCombined);
         }
 
+        function getSources(context) {
+            var sources = [];
+            if (styleSources[context]) sources = sources.concat(styleSources[context].sources);
+
+            glob.sync(binartaModulesPathPrefix + 'sources.json').forEach(function (src) {
+                var moduleSources = require(workingDir + '/' + src);
+                if (moduleSources.styleSources && moduleSources.styleSources[context])
+                    sources = sources.concat(moduleSources.styleSources[context].sources);
+            });
+
+            return sources;
+        }
+
         function CompileLessLibsTask() {
-            return CompileLessTaskFactory(context.styleSources.sources.libs.sources, 'libs.css')();
+            return CompileLessTaskFactory(libsSources, 'libs.css')();
 
         }
 
@@ -54,7 +73,7 @@ module.exports = {
         }
 
         function ConcatAppStyles() {
-            return gulp.src(context.styleSources.sources.app.sources)
+            return gulp.src(appSources)
                 .pipe(deleteLines({filters: [/@import/]}))
                 .pipe(concat('app.less'))
                 .pipe(gulp.dest('build/dist/styles/'));

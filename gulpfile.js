@@ -205,7 +205,9 @@ module.exports = function (gulp) {
     function ScriptsTask() {
         var jsSources = context.jsSources;
         glob.sync(binartaModulesPathPrefix + 'sources.json').forEach(function (src) {
-            jsSources = nodeExtend(true, jsSources, require(workingDir + '/' + src));
+            var moduleSources = require(workingDir + '/' + src);
+            moduleSources = moduleSources.jsSources || moduleSources;
+            jsSources = nodeExtend(true, jsSources, moduleSources);
         });
         var sources = [
             {type: 'init', predicate: true},
