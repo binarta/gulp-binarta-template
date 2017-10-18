@@ -11,12 +11,8 @@ var less = require('gulp-less'),
 module.exports = {
     install: function (gulp, context) {
         var styleSources = context.styleSources || false;
-        var libsSources, appSources;
 
         if (styleSources) {
-            libsSources = getSources('libs');
-            appSources = getSources('app');
-
             gulp.task('dirty.compile.less.libs', CompileLessLibsTask);
             gulp.task('update.compile.less.libs', ['update'], CompileLessLibsTask);
             gulp.task('compile.less.libs', ['clean', 'compileBowerConfig'], CompileLessLibsTask);
@@ -52,8 +48,7 @@ module.exports = {
         }
 
         function CompileLessLibsTask() {
-            return CompileLessTaskFactory(libsSources, 'libs.css')();
-
+            return CompileLessTaskFactory(getSources('libs'), 'libs.css')();
         }
 
         function CompileLessTaskFactory(src, out, vars) {
@@ -73,7 +68,7 @@ module.exports = {
         }
 
         function ConcatAppStyles() {
-            return gulp.src(appSources)
+            return gulp.src(getSources('app'))
                 .pipe(deleteLines({filters: [/@import/]}))
                 .pipe(concat('app.less'))
                 .pipe(gulp.dest('build/dist/styles/'));
