@@ -351,15 +351,15 @@ module.exports = function (gulp) {
     });
 
     function ServeTask() {
+        var middleware = [historyApiFallback()];
+        if (userContext.binartaUrl) middleware.push(proxy('/image', {
+            target: userContext.binartaUrl,
+            changeOrigin: true
+        }));
+
         browserSync.init({
             files: ['./build/dist/**/*.html', './build/dist/**/*.js', './build/dist/**/*.css'],
-            server: {
-                baseDir: './build/dist',
-                middleware: [historyApiFallback(), proxy('/image', {
-                    target: userContext.binartaUrl,
-                    changeOrigin: true
-                })]
-            },
+            server: {baseDir: './build/dist', middleware: middleware},
             open: false,
             notify: false,
             ghostMode: false
