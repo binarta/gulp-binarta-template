@@ -22,7 +22,8 @@ var template = require('gulp-template'),
     glob = require('glob'),
     workingDir = process.cwd(),
     binartaModulesPathPrefix = 'bower_components/binarta*/',
-    less = require('./less');
+    less = require('./less'),
+    proxy = require('http-proxy-middleware');
 
 module.exports = function (gulp) {
     var knownOptions = {
@@ -354,7 +355,10 @@ module.exports = function (gulp) {
             files: ['./build/dist/**/*.html', './build/dist/**/*.js', './build/dist/**/*.css'],
             server: {
                 baseDir: './build/dist',
-                middleware: [historyApiFallback()]
+                middleware: [historyApiFallback(), proxy('/image', {
+                    target: userContext.binartaUrl,
+                    changeOrigin: true
+                })]
             },
             open: false,
             notify: false,
