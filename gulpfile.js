@@ -352,10 +352,14 @@ module.exports = function (gulp) {
 
     function ServeTask() {
         var middleware = [historyApiFallback()];
-        if (userContext.binartaUrl) middleware.push(proxy('/image', {
-            target: userContext.binartaUrl,
-            changeOrigin: true
-        }));
+        if (userContext.binartaUrl) {
+            var binartaProxyConfig = {
+                target: userContext.binartaUrl,
+                changeOrigin: true
+            };
+            middleware.push(proxy('/image', binartaProxyConfig));
+            middleware.push(proxy(isStyleCompilationRequest, binartaProxyConfig));
+        }
 
         browserSync.init({
             files: ['./build/dist/**/*.html', './build/dist/**/*.js', './build/dist/**/*.css'],
@@ -364,6 +368,12 @@ module.exports = function (gulp) {
             notify: false,
             ghostMode: false
         });
+
+        function isStyleCompilationRequest() {
+            return function (pathname, request) {
+                return request.url.match('^\/styles.*\?.*compile.*');
+            };
+        }
     }
 
     gulp.task('serve', ['deploy', 'watch'], ServeTask);
