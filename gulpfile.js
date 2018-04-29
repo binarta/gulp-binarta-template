@@ -241,7 +241,7 @@ module.exports = function (gulp) {
 
     function valuesForObject(obj) {
         return Object.keys(obj).reduce(function (p, c) {
-            if (!fs.existsSync(obj[c]))
+            if (!fs.existsSync(obj[c]) && obj[c].indexOf('*') === -1)
                 throw new Error('File not found: ' + obj[c]);
             p.push(obj[c]);
             return p;
