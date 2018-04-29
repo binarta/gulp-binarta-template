@@ -369,10 +369,8 @@ module.exports = function (gulp) {
             ghostMode: false
         });
 
-        function isStyleCompilationRequest() {
-            return function (pathname, request) {
-                return request.url.match('^\/styles.*\?.*compile.*');
-            };
+        function isStyleCompilationRequest(pathname, request) {
+            return request.url.match('^\/styles.*\?.*compile.*');
         }
     }
 
