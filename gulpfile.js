@@ -224,6 +224,7 @@ module.exports = function (gulp) {
         ].reduce(extractRequiredSourcesFrom(jsSources), {});
         sources = valuesForObject(sources);
         sources.push('src/web/components/**/*.js');
+        sources.push('build/dist/scripts/partials.js');
         return gulp.src(sources)
             .pipe(concat('libs.js'))
             .pipe(gulpif(options.env != 'dev', uglify()))
@@ -248,8 +249,8 @@ module.exports = function (gulp) {
         }, []);
     }
 
-    gulp.task('update.scripts', ['update'], ScriptsTask);
-    gulp.task('scripts', ['clean', 'compileBowerConfig'], ScriptsTask);
+    gulp.task('update.scripts', ['update', 'partials'], ScriptsTask);
+    gulp.task('scripts', ['clean', 'compileBowerConfig', 'partials'], ScriptsTask);
     gulp.task('dirty.scripts', ['compileBowerConfig'], ScriptsTask);
 
     less.install(gulp, context);
