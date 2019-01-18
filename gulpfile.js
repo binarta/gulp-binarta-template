@@ -35,6 +35,7 @@ module.exports = function (gulp) {
         boolean: 'gallery',
         boolean: 'catalog',
         boolean: 'blog',
+        boolean: 'calendar',
         boolean: 'shop',
         boolean: 'paypal',
         string: 'subscription',
@@ -79,6 +80,10 @@ module.exports = function (gulp) {
     if (userContext.blog != undefined) context.blog = userContext.blog;
     else if (options.blog != undefined) context.blog = options.blog;
     if (context.blog == undefined) context.blog = context.essential;
+
+    if (userContext.calendar != undefined) context.calendar = userContext.calendar;
+    else if (options.calendar != undefined) context.calendar = options.calendar;
+    if (context.calendar == undefined) context.calendar = context.professional;
 
     if (userContext.about != undefined) context.about = userContext.about;
     else if (options.about != undefined) context.about = options.about;
@@ -215,6 +220,7 @@ module.exports = function (gulp) {
             {type: 'default', predicate: true},
             {type: 'html5', predicate: context.html5},
             {type: 'blog', predicate: context.blog},
+            {type: 'calendar', predicate: context.calendar},
             {type: 'catalog', predicate: context.catalog},
             {type: 'shop', predicate: context.shop},
             {type: 'paypal', predicate: context.paypal},
