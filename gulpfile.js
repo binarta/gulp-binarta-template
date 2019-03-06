@@ -22,6 +22,7 @@ var template = require('gulp-template'),
     glob = require('glob'),
     workingDir = process.cwd(),
     binartaModulesPathPrefix = 'bower_components/binarta*/',
+    webstersModulesPathPrefix = 'bower_components/websters*/',
     less = require('./less'),
     proxy = require('http-proxy-middleware');
 
@@ -210,7 +211,9 @@ module.exports = function (gulp) {
 
     function ScriptsTask() {
         var jsSources = context.jsSources;
-        glob.sync(binartaModulesPathPrefix + 'sources.json').forEach(function (src) {
+        [binartaModulesPathPrefix, webstersModulesPathPrefix].reduce(function(result, pattern) {
+            return result.concat(glob.sync(pattern + 'sources.json'));
+        }, []).forEach(function (src) {
             var moduleSources = require(workingDir + '/' + src);
             moduleSources = moduleSources.jsSources || moduleSources;
             jsSources = nodeExtend(true, jsSources, moduleSources);
