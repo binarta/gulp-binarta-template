@@ -2808,9 +2808,9 @@
       }
     },
     "less-plugin-autoprefix": {
-      "version": "1.5.1",
-      "from": "less-plugin-autoprefix@1.5.1",
-      "resolved": "https://registry.npmjs.org/less-plugin-autoprefix/-/less-plugin-autoprefix-1.5.1.tgz"
+      "version": "2.0.0",
+      "from": "less-plugin-autoprefix@2.0.0",
+      "resolved": "https://registry.npmjs.org/less-plugin-autoprefix/-/less-plugin-autoprefix-2.0.0.tgz"
     },
     "less-plugin-clean-css": {
       "version": "1.5.1",
