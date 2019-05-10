@@ -54,7 +54,7 @@ module.exports = {
         function CompileLessTaskFactory(src, out, vars) {
             if (vars === undefined) vars = {};
             return function () {
-                var autoprefix = new LessAutoprefix({browsers: ['> 0.5%', 'last 3 major versions', 'Firefox ESR', 'not dead']});
+                var autoprefix = new LessAutoprefix({browsers: ['> 0.5%', 'last 5 major versions', 'Firefox ESR', 'not dead']});
                 var cleanCSS = new LessPluginCleanCSS({advanced: true});
 
                 return gulp.src(src)
